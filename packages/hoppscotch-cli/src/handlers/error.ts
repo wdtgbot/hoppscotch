@@ -1,4 +1,3 @@
-import { log } from "console";
 import * as S from "fp-ts/string";
 import { HoppError, HoppErrorCode } from "../types/errors";
 import { hasProperty, isSafeCommanderError } from "../utils/checks";
@@ -7,7 +6,7 @@ import { exceptionColors } from "../utils/getters";
 const { BG_FAIL } = exceptionColors;
 
 /**
- * Parses unknown error data and narrows it to get information realted to
+ * Parses unknown error data and narrows it to get information related to
  * error in string format.
  * @param e Error data to parse.
  * @returns Information in string format appropriately parsed, based on error type.
@@ -43,13 +42,16 @@ export const handleError = <T extends HoppErrorCode>(error: HoppError<T>) => {
 
   switch (error.code) {
     case "FILE_NOT_FOUND":
-      ERROR_MSG = `File doesn't exists: ${error.path}`;
+      ERROR_MSG = `File doesn't exist: ${error.path}`;
       break;
     case "UNKNOWN_COMMAND":
       ERROR_MSG = `Unavailable command: ${error.command}`;
       break;
-    case "FILE_NOT_JSON":
-      ERROR_MSG = `Please check file type: ${error.path}`;
+    case "MALFORMED_ENV_FILE":
+      ERROR_MSG = `The environment file is not of the correct format.`;
+      break;
+    case "BULK_ENV_FILE":
+      ERROR_MSG = `CLI doesn't support bulk environments export.`;
       break;
     case "MALFORMED_COLLECTION":
       ERROR_MSG = `${error.path}\n${parseErrorData(error.data)}`;
@@ -59,6 +61,12 @@ export const handleError = <T extends HoppErrorCode>(error: HoppError<T>) => {
       break;
     case "PARSING_ERROR":
       ERROR_MSG = `Unable to parse -\n${error.data}`;
+      break;
+    case "INVALID_FILE_TYPE":
+      ERROR_MSG = `Please provide file of extension type .json: ${error.data}`;
+      break;
+    case "INVALID_DATA_FILE_TYPE":
+      ERROR_MSG = `Please provide file of extension type .csv: ${error.data}`;
       break;
     case "REQUEST_ERROR":
     case "TEST_SCRIPT_ERROR":
@@ -77,9 +85,28 @@ export const handleError = <T extends HoppErrorCode>(error: HoppError<T>) => {
     case "TESTS_FAILING":
       ERROR_MSG = error.data;
       break;
+    case "TOKEN_EXPIRED":
+      ERROR_MSG = `The specified access token is expired. Please provide a valid token: ${error.data}`;
+      break;
+    case "TOKEN_INVALID":
+      ERROR_MSG = `The specified access token is invalid. Please provide a valid token: ${error.data}`;
+      break;
+    case "INVALID_ID":
+      ERROR_MSG = `The specified collection/environment (ID or file path) is invalid or inaccessible. Please ensure the supplied ID or file path is correct: ${error.data}`;
+      break;
+    case "INVALID_SERVER_URL":
+      ERROR_MSG = `Please provide a valid SH instance server URL: ${error.data}`;
+      break;
+    case "SERVER_CONNECTION_REFUSED":
+      ERROR_MSG = `Unable to connect to the server. Please check your network connection or server instance URL and try again: ${error.data}`;
+      break;
+    case "REPORT_EXPORT_FAILED":
+      const moreInfo = error.data ? `: ${error.data}` : S.empty;
+      ERROR_MSG = `Failed to export the report at ${error.path}${moreInfo}`;
+      break;
   }
 
   if (!S.isEmpty(ERROR_MSG)) {
-    log(ERROR_CODE, ERROR_MSG);
+    console.error(ERROR_CODE, ERROR_MSG);
   }
 };

@@ -15,7 +15,6 @@ type HoppErrors = {
   FILE_NOT_FOUND: HoppErrorPath;
   UNKNOWN_COMMAND: HoppErrorCmd;
   MALFORMED_COLLECTION: HoppErrorPath & HoppErrorData;
-  FILE_NOT_JSON: HoppErrorPath;
   NO_FILE_PATH: {};
   PRE_REQUEST_SCRIPT_ERROR: HoppErrorData;
   PARSING_ERROR: HoppErrorData;
@@ -24,6 +23,16 @@ type HoppErrors = {
   SYNTAX_ERROR: HoppErrorData;
   REQUEST_ERROR: HoppErrorData;
   INVALID_ARGUMENT: HoppErrorData;
+  MALFORMED_ENV_FILE: HoppErrorPath & HoppErrorData;
+  BULK_ENV_FILE: HoppErrorPath & HoppErrorData;
+  INVALID_FILE_TYPE: HoppErrorData;
+  INVALID_DATA_FILE_TYPE: HoppErrorData;
+  TOKEN_EXPIRED: HoppErrorData;
+  TOKEN_INVALID: HoppErrorData;
+  INVALID_ID: HoppErrorData;
+  INVALID_SERVER_URL: HoppErrorData;
+  SERVER_CONNECTION_REFUSED: HoppErrorData;
+  REPORT_EXPORT_FAILED: HoppErrorPath & HoppErrorData;
 };
 
 export type HoppErrorCode = keyof HoppErrors;
